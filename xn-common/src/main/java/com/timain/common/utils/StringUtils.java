@@ -188,6 +188,23 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return str.substring(start, end);
     }
 
+    /**
+     * 判断是否包含字符串
+     * @param str 验证字符串
+     * @param args 字符串组
+     * @return
+     */
+    public static boolean inStringIgnoreCase(String str, String... args) {
+        if (null != str && null != args) {
+            for (String s : args) {
+                if (str.equalsIgnoreCase(trim(s))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> T cast(Object object) {
         return (T) object;
