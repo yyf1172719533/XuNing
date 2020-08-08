@@ -1,5 +1,7 @@
 package com.timain.common.utils;
 
+import com.timain.common.core.text.StrFormatter;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -189,6 +191,56 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     /**
+     * 格式化文本
+     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param params 参数值
+     * @return
+     */
+    public static String format(String template, Object... params) {
+        if (isEmpty(params) || isEmpty(template)) {
+            return template;
+        }
+        return StrFormatter.format(template, params);
+    }
+
+    /**
+     * 下划线转驼峰命名
+     * @param str
+     * @return
+     */
+    public static String toUnderScoreCase(String str) {
+        if (null == str) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        // 前置字符是否大写
+        boolean preCharIsUpperCase = true;
+        // 当前字符是否大写
+        boolean currCharIsUpperCase = true;
+        // 下一字符是否大写
+        boolean nextCharIsUpperCase = true;
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (i > 0) {
+                preCharIsUpperCase = Character.isUpperCase(str.charAt(i - 1));
+            } else {
+                preCharIsUpperCase = false;
+            }
+            currCharIsUpperCase = Character.isUpperCase(c);
+            if (i < (str.length() - 1)) {
+                nextCharIsUpperCase = Character.isUpperCase(str.charAt(i + 1));
+            }
+            if (preCharIsUpperCase && currCharIsUpperCase && !nextCharIsUpperCase) {
+                sb.append(SEPARATOR);
+            } else if (i != 0 && !preCharIsUpperCase && currCharIsUpperCase) {
+                sb.append(SEPARATOR);
+            }
+            sb.append(Character.toLowerCase(c));
+        }
+        return sb.toString();
+    }
+
+    /**
      * 判断是否包含字符串
      * @param str 验证字符串
      * @param args 字符串组
@@ -203,6 +255,61 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * 将下划线大写方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 例如：HELLO_WORLD->HelloWorld.
+     * @param name 转换前的下划线大写方式命名的字符串
+     * @return 转换后的驼峰式命名的字符串
+     */
+    public static String convertToCamelCase(String name) {
+        StringBuilder builder = new StringBuilder();
+        if (null == name || name.isEmpty()) {
+            return "";
+        } else if (!name.contains("_")) {
+            // 不含下划线，仅将首字母大写
+            return name.substring(0, 1).toUpperCase() + name.substring(1);
+        }
+        // 用下划线将原始字符串分割
+        String[] camels = name.split("_");
+        for (String camel : camels) {
+            if (camel.isEmpty()) {
+                continue;
+            }
+            // 首字母大写
+            builder.append(camel.substring(0, 1).toUpperCase());
+            builder.append(camel.substring(1).toLowerCase());
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 驼峰式命名法
+     * @param s
+     * @return
+     */
+    public static String toCamelCase(String s) {
+        if (null == s) {
+            return null;
+        }
+        if (s.indexOf(SEPARATOR) == -1) {
+            return s;
+        }
+        s = s.toLowerCase();
+        StringBuilder sb = new StringBuilder(s.length());
+        boolean upperCase = false;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == SEPARATOR) {
+                upperCase = true;
+            } else if (upperCase) {
+                sb.append(Character.toUpperCase(c));
+                upperCase = false;
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     @SuppressWarnings("unchecked")
