@@ -2,6 +2,8 @@ package com.timain.common.core.text;
 
 import com.timain.common.utils.StringUtils;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
@@ -203,5 +205,44 @@ public class Convert {
      */
     public static Integer toInt(Object value) {
         return toInt(value, null);
+    }
+
+    /**
+     * 将对象转为字符串
+     * @param obj
+     * @return
+     */
+    public static String utf8Str(Object obj) {
+        return str(obj, CharsetKit.CHARSET_UTF_8);
+    }
+
+    /**
+     * 将对象转为字符串
+     * @param obj
+     * @param charsetName
+     * @return
+     */
+    public static String str(Object obj, String charsetName) {
+        return str(obj, Charset.forName(charsetName));
+    }
+
+    /**
+     * 将对象转为字符串
+     * @param obj
+     * @param charset
+     * @return
+     */
+    public static String str(Object obj, Charset charset) {
+        if (null == obj) {
+            return null;
+        }
+        if (obj instanceof String) {
+            return (String) obj;
+        } else if (obj instanceof byte[] || obj instanceof Byte[]) {
+            return str((Byte[]) obj, charset);
+        } else if (obj instanceof ByteBuffer) {
+            return str((ByteBuffer) obj, charset);
+        }
+        return obj.toString();
     }
 }
