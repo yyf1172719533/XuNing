@@ -30,7 +30,7 @@ public class BeanUtils extends org.springframework.beans.BeanUtils {
      * @param dest
      * @param src
      */
-    public static void copyBeanProp(Object dest, String src) {
+    public static void copyBeanProp(Object dest, Object src) {
         try {
             copyProperties(src, dest);
         } catch (BeansException e) {
